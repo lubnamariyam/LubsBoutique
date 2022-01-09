@@ -42,11 +42,15 @@ import com.lubnamariyam.lubsboutique.model.Product
 import com.lubnamariyam.lubsboutique.model.ProductResponse
 import com.lubnamariyam.lubsboutique.ui.theme.LubsBoutiqueTheme
 import com.lubnamariyam.lubsboutique.view.HomeScreen
+import com.lubnamariyam.lubsboutique.view.ProductDetailPage
 import com.lubnamariyam.lubsboutique.viewModel.HomeViewModel
 import kotlinx.coroutines.delay
 
 public class MainActivity : ComponentActivity() {
     val homeViewModel by viewModels<HomeViewModel>()
+    companion object{
+        var tempProduct: Product? = null
+    }
 
     
 
@@ -78,8 +82,11 @@ fun Navigation(viewModel: HomeViewModel) {
             // Main Screen
             composable("main_screen") {
                 val activity = (LocalContext.current as? Activity)
-                ProductList(productList = viewModel.productListResponse, navController = navController, activity = MainActivity())
-                //HomeScreen(navController = navController, activity = MainActivity(), productList = viewModel.productListResponse)
+                ProductList(productList = viewModel.productListResponse, navController = navController, activity = activity!!)
+            }
+            // Main Screen
+            composable("product_detail") {
+                ProductDetailPage(product = MainActivity.tempProduct!!)
             }
         }
     }
@@ -88,7 +95,7 @@ fun Navigation(viewModel: HomeViewModel) {
 
 @ExperimentalFoundationApi
 @Composable
-fun ProductList(productList: ProductResponse , navController: NavController , activity: MainActivity) {
+fun ProductList(productList: ProductResponse , navController: NavController , activity: Activity) {
     println("Hello  " + productList)
     LazyVerticalGrid(GridCells.Fixed(2)) {
         items(productList.products.size) {
@@ -118,7 +125,7 @@ fun SplashScreen(navController: NavController) {
                 })
         )
 
-        delay(3000L)
+        delay(2000L)
         navController.navigate("main_screen")
     }
 

@@ -35,13 +35,15 @@ import com.lubnamariyam.lubsboutique.model.ProductResponse
 import com.lubnamariyam.lubsboutique.viewModel.HomeViewModel
 
 @Composable
-fun HomeScreen(navController: NavController , activity: MainActivity , productList : Product){
+fun HomeScreen(navController: NavController , activity: Activity , productList : Product){
+    BackHandler() {
+        activity.finish()
+    }
     Card(modifier = Modifier
         .padding(8.dp, 4.dp)
         .width(200.dp)
         .height(275.dp), shape = RoundedCornerShape(8.dp), elevation = 4.dp) {
         Surface() {
-
             Column(
                 Modifier
                     .padding(4.dp)
@@ -73,10 +75,13 @@ fun HomeScreen(navController: NavController , activity: MainActivity , productLi
                     Text(text = productList.price, color = Color.Gray , textAlign = TextAlign.End , style = TextStyle(textDecoration = TextDecoration.LineThrough), modifier = Modifier.padding(top = 2.dp), fontFamily = FontFamily.SansSerif)
                 }
                 Spacer(modifier = Modifier.padding(4.dp))
-                Button(onClick = { }, modifier = Modifier
+                Button(onClick = {
+                                 MainActivity.tempProduct = productList
+                    navController.navigate("product_detail")
+                }, modifier = Modifier
                     .padding(0.dp)
                     .fillMaxWidth(), enabled = true ,shape = MaterialTheme.shapes.medium,) {
-                    Text(text = "ADD", color = Color.White)
+                    Text(text = "BUY", color = Color.White)
                 }
                 
                 
@@ -84,10 +89,5 @@ fun HomeScreen(navController: NavController , activity: MainActivity , productLi
 
             }
         }
-    }
-
-
-    BackHandler() {
-        activity.finish()
     }
 }
