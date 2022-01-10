@@ -33,6 +33,7 @@ import com.lubnamariyam.lubsboutique.MainActivity
 import com.lubnamariyam.lubsboutique.model.Product
 import com.lubnamariyam.lubsboutique.model.ProductResponse
 import com.lubnamariyam.lubsboutique.viewModel.HomeViewModel
+import com.lubnamariyam.lubsboutique.viewModel.ProductViewModel
 
 @Composable
 fun HomeScreen(navController: NavController , activity: Activity , productList : Product){

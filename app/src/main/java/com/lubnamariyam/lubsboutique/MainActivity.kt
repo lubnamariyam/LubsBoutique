@@ -10,16 +10,15 @@ import androidx.activity.viewModels
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -30,10 +29,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role.Companion.Image
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -44,6 +47,7 @@ import com.lubnamariyam.lubsboutique.ui.theme.LubsBoutiqueTheme
 import com.lubnamariyam.lubsboutique.view.HomeScreen
 import com.lubnamariyam.lubsboutique.view.ProductDetailPage
 import com.lubnamariyam.lubsboutique.viewModel.HomeViewModel
+import com.lubnamariyam.lubsboutique.viewModel.ProductViewModel
 import kotlinx.coroutines.delay
 
 public class MainActivity : ComponentActivity() {
@@ -51,6 +55,8 @@ public class MainActivity : ComponentActivity() {
     companion object{
         var tempProduct: Product? = null
     }
+
+    val productViewModel = ViewModelProvider(this).get(ProductViewModel::class.java)
 
     
 
@@ -86,10 +92,35 @@ fun Navigation(viewModel: HomeViewModel) {
             }
             // Main Screen
             composable("product_detail") {
-                ProductDetailPage(product = MainActivity.tempProduct!!)
+                Column() {
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = "Product Detail",
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = FontFamily.SansSerif
+                            )
+                        } ,
+                        navigationIcon = {
+                            IconButton(onClick = { navController.navigate("main_screen") }) {
+                                Icon(Icons.Filled.ArrowBack, null)
+                            }
+                        },
+                        actions = {
+                            IconButton(onClick = {/* Do Something*/ }) {
+                                Icon(Icons.Filled.ShoppingCart, null)
+                            }
+                        }
+                    )
+                    ProductDetailPage(product = MainActivity.tempProduct!!)
+                }
+
             }
+
         }
-    }
+}
+
     
 
 
@@ -97,12 +128,38 @@ fun Navigation(viewModel: HomeViewModel) {
 @Composable
 fun ProductList(productList: ProductResponse , navController: NavController , activity: Activity) {
     println("Hello  " + productList)
-    LazyVerticalGrid(GridCells.Fixed(2)) {
-        items(productList.products.size) {
-            index ->
-            HomeScreen(navController = navController , activity = activity, productList = productList.products[index])
+    Column() {
+        TopAppBar(
+            title = {
+                Text(
+                    text = "Lubs Boutique",
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.SansSerif
+                )
+            } ,
+            navigationIcon = {
+                IconButton(onClick = {activity.finish() }) {
+                    Icon(Icons.Filled.ArrowBack, null)
+                }
+            },
+            actions = {
+                IconButton(onClick = {/* Do Something*/ }) {
+                    Icon(Icons.Filled.ShoppingCart, null)
+                }
+            }
+        )
+        LazyVerticalGrid(GridCells.Fixed(2)) {
+            items(productList.products.size) { index ->
+                HomeScreen(
+                    navController = navController,
+                    activity = activity,
+                    productList = productList.products[index]
+                )
+            }
         }
     }
+
 }
 
 

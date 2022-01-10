@@ -22,10 +22,13 @@ import coil.compose.base.R
 import coil.compose.rememberImagePainter
 import coil.size.Scale
 import com.lubnamariyam.lubsboutique.MainActivity
+import com.lubnamariyam.lubsboutique.database.ProductEntity
 import com.lubnamariyam.lubsboutique.model.Product
+import com.lubnamariyam.lubsboutique.viewModel.ProductViewModel
 
 @Composable
-fun ProductDetailPage(product : Product) {
+fun ProductDetailPage(product : Product , productViewModel: ProductViewModel) {
+    var productEntity = ProductEntity(image = product.image, name = product.name, price = product.price, special = product.special, quantity = 1, product_id = product.product_id, description = product.description)
     Column() {
         Card(modifier = Modifier
             .padding(12.dp)
@@ -70,6 +73,9 @@ fun ProductDetailPage(product : Product) {
                     Text(text = product.description ,color = Color.Gray, textAlign = TextAlign.Start, fontFamily = FontFamily.SansSerif , modifier = Modifier.padding(start = 8.dp) , lineHeight = 20.sp )
                     Spacer(modifier = Modifier.padding(8.dp))
                     Button(onClick = {
+                                     productViewModel.insertProduct(productEntity)
+                        println("Prod-->" + productViewModel.getAllProduct())
+
                     }, modifier = Modifier
                         .padding(start = 6.dp, end = 6.dp, bottom = 6.dp)
                         .fillMaxWidth(), enabled = true ,shape = MaterialTheme.shapes.medium,) {
