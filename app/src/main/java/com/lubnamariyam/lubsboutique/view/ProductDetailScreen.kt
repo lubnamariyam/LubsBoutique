@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.base.R
 import coil.compose.rememberImagePainter
 import coil.size.Scale
@@ -27,8 +28,32 @@ import com.lubnamariyam.lubsboutique.model.Product
 import com.lubnamariyam.lubsboutique.viewModel.ProductViewModel
 
 @Composable
-fun ProductDetailPage(product : Product , productViewModel: ProductViewModel) {
-    var productEntity = ProductEntity(image = product.image, name = product.name, price = product.price, special = product.special, quantity = 1, product_id = product.product_id, description = product.description)
+fun ProductDetailPage(product : Product , productViewModel: ProductViewModel , navController: NavController ) {
+    var productEntity = ProductEntity(
+        image = product.image,
+        name = product.name,
+        price = product.price,
+        special = product.special,
+        quantity = 1,
+        product_id = product.product_id,
+        description = product.description
+    )
+
+    var isCartProduct = false
+    try {
+        var tempProductEntity = productViewModel.getSingleProduct(productEntity.product_id)
+        if (tempProductEntity != null){
+            isCartProduct = true
+            productEntity = tempProductEntity
+        }
+
+    }catch (e:Exception){
+        e.printStackTrace()
+    }
+
+
+
+
     Column() {
         Card(modifier = Modifier
             .padding(12.dp)
@@ -72,15 +97,29 @@ fun ProductDetailPage(product : Product , productViewModel: ProductViewModel) {
                     Spacer(modifier = Modifier.padding(4.dp))
                     Text(text = product.description ,color = Color.Gray, textAlign = TextAlign.Start, fontFamily = FontFamily.SansSerif , modifier = Modifier.padding(start = 8.dp) , lineHeight = 20.sp )
                     Spacer(modifier = Modifier.padding(8.dp))
-                    Button(onClick = {
-                                     productViewModel.insertProduct(productEntity)
-                        println("Prod-->" + productViewModel.getAllProduct())
 
-                    }, modifier = Modifier
-                        .padding(start = 6.dp, end = 6.dp, bottom = 6.dp)
-                        .fillMaxWidth(), enabled = true ,shape = MaterialTheme.shapes.medium,) {
-                        Text(text = "ADD TO CART", color = Color.White)
+                    if (isCartProduct){
+                        Button(onClick = { navController.navigate("cart_screen") }
+                            ,
+                            modifier = Modifier
+                                .padding(start = 6.dp, end = 6.dp, bottom = 6.dp)
+                                .fillMaxWidth(), enabled = true ,shape = MaterialTheme.shapes.medium) {
+                            Text(text = "VIEW IN CART", color = Color.White)
+
+                        }
+                    }else{
+                        Button(onClick = {
+                            productViewModel.insertProduct(productEntity)
+                            println("Prod-->" + productViewModel.getAllProduct())
+                            navController.navigate("cart_screen")
+                        },
+                            modifier = Modifier
+                                .padding(start = 6.dp, end = 6.dp, bottom = 6.dp)
+                                .fillMaxWidth(), enabled = true ,shape = MaterialTheme.shapes.medium,) {
+                            Text(text = "ADD TO CART", color = Color.White)
+                        }
                     }
+
                 }
             }
         }

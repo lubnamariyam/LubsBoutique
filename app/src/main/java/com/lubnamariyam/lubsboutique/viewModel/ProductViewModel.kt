@@ -38,6 +38,18 @@ class ProductViewModel(appObj: Application) : AndroidViewModel(appObj)  {
         }
     }
 
+    fun updateProductQuantity(productId: String, quantity: Int) = viewModelScope.launch {
+        productRepository.updateProductCount(productId, quantity)
+    }
+
+    fun deleteProduct(productId: String) = viewModelScope.launch {
+        productRepository.deleteCartProduct(productId)
+    }
+
+    fun getSingleProduct(productId: String): ProductEntity {
+        return productRepository.getSingleProduct(productId)
+    }
+
 
 
 }

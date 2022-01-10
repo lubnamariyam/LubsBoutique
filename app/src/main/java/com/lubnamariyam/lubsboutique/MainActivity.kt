@@ -44,6 +44,7 @@ import androidx.navigation.compose.rememberNavController
 import com.lubnamariyam.lubsboutique.model.Product
 import com.lubnamariyam.lubsboutique.model.ProductResponse
 import com.lubnamariyam.lubsboutique.ui.theme.LubsBoutiqueTheme
+import com.lubnamariyam.lubsboutique.view.CartPage
 import com.lubnamariyam.lubsboutique.view.HomeScreen
 import com.lubnamariyam.lubsboutique.view.ProductDetailPage
 import com.lubnamariyam.lubsboutique.viewModel.HomeViewModel
@@ -56,18 +57,19 @@ public class MainActivity : ComponentActivity() {
         var tempProduct: Product? = null
     }
 
-    val productViewModel = ViewModelProvider(this).get(ProductViewModel::class.java)
+    var productViewModel : ProductViewModel? = null
 
     
 
     @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        productViewModel = ViewModelProvider(this).get(ProductViewModel::class.java)
         setContent {
             LubsBoutiqueTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Navigation(homeViewModel)
+                    Navigation(homeViewModel, productViewModel!!)
                     homeViewModel.getProductList()
                 }
             }
@@ -77,7 +79,7 @@ public class MainActivity : ComponentActivity() {
 
 @ExperimentalFoundationApi
 @Composable
-fun Navigation(viewModel: HomeViewModel) {
+fun Navigation(viewModel: HomeViewModel , productViewModel: ProductViewModel) {
     val navController = rememberNavController()
 
         NavHost(navController = navController,
@@ -85,12 +87,12 @@ fun Navigation(viewModel: HomeViewModel) {
             composable("splash_screen") {
                 SplashScreen(navController = navController)
             }
-            // Main Screen
+            // Products screen
             composable("main_screen") {
                 val activity = (LocalContext.current as? Activity)
                 ProductList(productList = viewModel.productListResponse, navController = navController, activity = activity!!)
             }
-            // Main Screen
+            // Product Details Screen
             composable("product_detail") {
                 Column() {
                     TopAppBar(
@@ -113,15 +115,18 @@ fun Navigation(viewModel: HomeViewModel) {
                             }
                         }
                     )
-                    ProductDetailPage(product = MainActivity.tempProduct!!)
+                    ProductDetailPage(product = MainActivity.tempProduct!!, productViewModel, navController)
                 }
+            }
 
+            // Cart Screen
+            composable("cart_screen") {
+                CartPage(productViewModel = productViewModel)
             }
 
         }
 }
 
-    
 
 
 @ExperimentalFoundationApi
@@ -144,7 +149,7 @@ fun ProductList(productList: ProductResponse , navController: NavController , ac
                 }
             },
             actions = {
-                IconButton(onClick = {/* Do Something*/ }) {
+                IconButton(onClick = {navController.navigate("cart_screen") }) {
                     Icon(Icons.Filled.ShoppingCart, null)
                 }
             }

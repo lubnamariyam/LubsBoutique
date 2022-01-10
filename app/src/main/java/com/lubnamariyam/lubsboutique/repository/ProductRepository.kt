@@ -33,6 +33,16 @@ class ProductRepository(application: Application) {
         productDao.getById(id)
     }
 
+    suspend fun updateProductCount(productId: String, quantity: Int) {
+        productDao.updateCartProduct(productId, quantity)
+    }
+
+    suspend fun deleteCartProduct(productId: String) {
+        productDao.deleteCartProduct(productId)
+    }
+
+    fun getSingleProduct(productId: String) = productDao.getSingleProduct(productId)
+
 
     suspend fun deleteProductById(id: Int) {
         productDao.deleteProductById(id)
