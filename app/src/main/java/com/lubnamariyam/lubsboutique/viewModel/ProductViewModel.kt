@@ -12,9 +12,15 @@ class ProductViewModel(appObj: Application) : AndroidViewModel(appObj)  {
 
     private val productRepository: ProductRepository = ProductRepository(appObj)
 
+
     fun getAllProduct(): LiveData<List<ProductEntity>> {
         return productRepository.readAllData
     }
+
+    fun getSingleAllProduct(id:String): LiveData<ProductEntity> {
+        return productRepository.readSingleData(id)
+    }
+
 
     fun insertProduct(productEntity: ProductEntity) {
         viewModelScope.launch {
@@ -22,21 +28,6 @@ class ProductViewModel(appObj: Application) : AndroidViewModel(appObj)  {
         }
     }
 
-    fun deleteProduct(productEntity: ProductEntity) {
-        viewModelScope.launch {
-            productRepository.deleteProduct(productEntity)
-        }
-    }
-    fun updateProduct(productEntity: ProductEntity) {
-        viewModelScope.launch {
-            productRepository.updateProduct(productEntity)
-        }
-    }
-    fun insertProductById(id:Int) {
-        viewModelScope.launch {
-            productRepository.insertProductById(id)
-        }
-    }
 
     fun updateProductQuantity(productId: String, quantity: Int) = viewModelScope.launch {
         productRepository.updateProductCount(productId, quantity)
@@ -46,9 +37,7 @@ class ProductViewModel(appObj: Application) : AndroidViewModel(appObj)  {
         productRepository.deleteCartProduct(productId)
     }
 
-    fun getSingleProduct(productId: String): ProductEntity {
-        return productRepository.getSingleProduct(productId)
-    }
+
 
 
 

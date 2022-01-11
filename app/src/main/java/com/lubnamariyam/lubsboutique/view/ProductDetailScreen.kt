@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,20 +39,7 @@ fun ProductDetailPage(product : Product , productViewModel: ProductViewModel , n
         product_id = product.product_id,
         description = product.description
     )
-
-    var isCartProduct = false
-    try {
-        var tempProductEntity = productViewModel.getSingleProduct(productEntity.product_id)
-        if (tempProductEntity != null){
-            isCartProduct = true
-            productEntity = tempProductEntity
-        }
-
-    }catch (e:Exception){
-        e.printStackTrace()
-    }
-
-
+    var singleprddata = productViewModel.getSingleAllProduct(product.product_id).observeAsState()
 
 
     Column() {
@@ -98,14 +86,13 @@ fun ProductDetailPage(product : Product , productViewModel: ProductViewModel , n
                     Text(text = product.description ,color = Color.Gray, textAlign = TextAlign.Start, fontFamily = FontFamily.SansSerif , modifier = Modifier.padding(start = 8.dp) , lineHeight = 20.sp )
                     Spacer(modifier = Modifier.padding(8.dp))
 
-                    if (isCartProduct){
+                    if (singleprddata.value?.product_id  != null){
                         Button(onClick = { navController.navigate("cart_screen") }
                             ,
                             modifier = Modifier
                                 .padding(start = 6.dp, end = 6.dp, bottom = 6.dp)
                                 .fillMaxWidth(), enabled = true ,shape = MaterialTheme.shapes.medium) {
                             Text(text = "VIEW IN CART", color = Color.White)
-
                         }
                     }else{
                         Button(onClick = {

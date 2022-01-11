@@ -8,6 +8,9 @@ interface ProductDao {
     @Query("SELECT * from product_table")
     fun getAll(): LiveData<List<ProductEntity>>
 
+    @Query("SELECT * FROM product_table WHERE product_id=:id")
+    fun getSingleAll(id: String): LiveData<ProductEntity>
+
     @Query("SELECT * from product_table where uid = :id")
     fun getById(id: Int) : ProductEntity?
 
@@ -27,7 +30,7 @@ interface ProductDao {
     suspend fun deleteCartProduct(productId: String)
 
     @Query("SELECT * FROM product_table WHERE product_id=:product_id")
-    fun getSingleProduct(product_id :String) : ProductEntity
+    suspend fun getSingleProduct(product_id :String) : ProductEntity
 
     @Query("DELETE FROM product_table where uid = :id")
     suspend fun deleteProductById(id: Int)
