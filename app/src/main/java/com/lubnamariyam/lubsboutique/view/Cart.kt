@@ -1,9 +1,8 @@
 package com.lubnamariyam.lubsboutique.view
 
 import android.app.Activity
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import android.graphics.Paint
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -34,6 +33,11 @@ import coil.size.Scale
 import com.lubnamariyam.lubsboutique.ui.theme.Purple200
 import com.lubnamariyam.lubsboutique.viewModel.ProductViewModel
 
+object lub{
+    var cartTotal = 0
+    var savings = 0
+    var finalPrice = 0
+}
 @Composable
 fun CartPage(productViewModel: ProductViewModel) {
     var data = productViewModel.getAllProduct().observeAsState(arrayListOf())
@@ -56,7 +60,7 @@ fun CartPage(productViewModel: ProductViewModel) {
             },
 
             )
-        LazyColumn(content = {
+        LazyColumn(Modifier.weight(1f), content = {
             items(
                 items = data.value,
                 itemContent = {
@@ -96,32 +100,37 @@ fun CartPage(productViewModel: ProductViewModel) {
                                             contentDescription = "Minus",
                                             modifier = Modifier
                                                 .clickable {
-                                                    if (it.quantity == 1){
+                                                    if (it.quantity == 1) {
                                                         productViewModel.deleteProduct(it.product_id)
-                                                    }
-                                                    else{
-                                                        productViewModel.updateProductQuantity(it.product_id, it.quantity - 1)
+                                                    } else {
+                                                        productViewModel.updateProductQuantity(
+                                                            it.product_id,
+                                                            it.quantity - 1
+                                                        )
                                                     }
                                                 }
                                                 .size(25.dp),
-                                            tint = Purple200
+                                            tint = Color.Blue
                                         )
                                         Text(
                                             text = it.quantity.toString(),
                                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp),
                                             fontFamily = FontFamily.SansSerif,
                                             fontWeight = FontWeight.Medium,
-                                            color = Color.Black
+                                            color = Color.DarkGray
                                         )
                                         Icon(
                                             painter = painterResource(id = com.lubnamariyam.lubsboutique.R.drawable.ic_baseline_add_circle_outline_24),
                                             contentDescription = "Add",
                                             modifier = Modifier
                                                 .clickable {
-                                                    productViewModel.updateProductQuantity(it.product_id,it.quantity +1)
+                                                    productViewModel.updateProductQuantity(
+                                                        it.product_id,
+                                                        it.quantity + 1
+                                                    )
                                                 }
                                                 .size(25.dp),
-                                            tint = Purple200
+                                            tint = Color.Blue
                                         )
                                         Spacer(modifier = Modifier.padding(4.dp))
                                     }
@@ -129,9 +138,75 @@ fun CartPage(productViewModel: ProductViewModel) {
                             }
                         }
                     }
-
+                    var ab = it.special.drop(1)
+                    if (ab.contains(",")){
+                        ab = ab.drop(2)
+                    }
+                    var pric = it.price.drop(1)
+                    if (pric.contains(",")){
+                        pric = pric.drop(2)
+                    }
+                    lub.finalPrice = lub.finalPrice.plus(Integer.parseInt(ab))
+                    var tempsavings = Integer.parseInt(pric).minus(Integer.parseInt(ab))
+                    lub.savings = lub.savings.plus(tempsavings)
+                    lub.cartTotal = lub.cartTotal.plus(Integer.parseInt(ab))
                 })
+
         })
+        Spacer(modifier = Modifier.padding(10.dp))
+        /*for (i in 0 until data.value.size){
+            finalPrice = finalPrice.toInt().plus(data.value[i].special.toInt())
+            var tempsavings = data.value[i].price.toInt().minus(data.value[i].special.toInt())
+            savings = savings.plus(tempsavings)
+
+            cartTotal = cartTotal.plus(data.value[i].price.toInt())
+
+        }*/
+
+        Card(modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp, 4.dp), shape = RoundedCornerShape(8.dp), elevation = 4.dp) {
+            Column(verticalArrangement = Arrangement.Top) {
+                Row(Modifier.background(Color.LightGray )) {
+                    Text(text = "Price Details" , modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp))
+                }
+                Spacer(modifier = Modifier.padding(4.dp))
+                Column(modifier = Modifier.padding(10.dp)
+                ) {
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(text = "Cart Total",fontWeight = FontWeight.Medium , fontFamily = FontFamily.SansSerif)
+                        Text(text = lub.cartTotal.toFloat().toString(), fontWeight = FontWeight.Medium , fontFamily = FontFamily.SansSerif)
+                    }
+                    Spacer(modifier = Modifier.padding(4.dp))
+
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(text = "Savings" , fontWeight = FontWeight.Medium , fontFamily = FontFamily.SansSerif)
+                        Text(text = "${lub.savings.toFloat()}" , fontWeight = FontWeight.Medium , fontFamily = FontFamily.SansSerif)
+                    }
+                    Spacer(modifier = Modifier.padding(4.dp))
+
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(text = "Final Price" , fontWeight = FontWeight.Bold , fontFamily = FontFamily.SansSerif)
+                        Text(text = lub.finalPrice.toFloat().toString(), fontWeight = FontWeight.Bold , fontFamily = FontFamily.SansSerif)
+                    }
+                    Spacer(modifier = Modifier.padding(4.dp))
+                }
+
+            }
+        }
+        Spacer(modifier = Modifier.padding(10.dp))
+
+        Button(onClick = { },
+            modifier = Modifier
+                .padding(start = 6.dp, end = 6.dp, bottom = 6.dp)
+                .fillMaxWidth(), enabled = true ,shape = MaterialTheme.shapes.medium) {
+            Text(text = "CHECKOUT", color = Color.White)
+        }
     }
 
 
