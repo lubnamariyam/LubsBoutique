@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.fontResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -40,17 +41,19 @@ fun HomeScreen(navController: NavController , activity: Activity , productList :
     BackHandler() {
         activity.finish()
     }
-    Card(modifier = Modifier
-        .padding(8.dp, 4.dp)
-        .width(200.dp)
-        .height(275.dp), shape = RoundedCornerShape(8.dp), elevation = 4.dp) {
+
+    Card(
+        modifier = Modifier
+            .padding(8.dp, 4.dp)
+            .width(200.dp)
+            .height(275.dp), shape = RoundedCornerShape(8.dp), elevation = 4.dp
+    ) {
         Surface() {
             Column(
                 Modifier
                     .padding(4.dp)
                     .fillMaxSize()
             ) {
-
                 Image(
                     painter = rememberImagePainter(
                         data = productList.image,
@@ -67,28 +70,48 @@ fun HomeScreen(navController: NavController , activity: Activity , productList :
                         .weight(0.2f)
                 )
 
-                Text(text = productList.name , maxLines = 1, overflow = TextOverflow.Ellipsis , modifier = Modifier.padding(start = 4.dp), fontFamily = FontFamily.SansSerif
+                Text(
+                    text = productList.name,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(start = 4.dp),
+                    fontFamily = FontFamily.SansSerif
                 )
                 Spacer(modifier = Modifier.padding(4.dp))
                 Row(modifier = Modifier.padding(start = 4.dp)) {
-                    Text(text = productList.special, fontWeight = FontWeight.Bold , textAlign = TextAlign.Start, fontFamily = FontFamily.SansSerif)
+                    Text(
+                        text = productList.special,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Start,
+                        fontFamily = FontFamily.SansSerif
+                    )
                     Spacer(modifier = Modifier.padding(6.dp))
-                    Text(text = productList.price, color = Color.Gray , textAlign = TextAlign.End , style = TextStyle(textDecoration = TextDecoration.LineThrough), modifier = Modifier.padding(top = 2.dp), fontFamily = FontFamily.SansSerif)
+                    Text(
+                        text = productList.price,
+                        color = Color.Gray,
+                        textAlign = TextAlign.End,
+                        style = TextStyle(textDecoration = TextDecoration.LineThrough),
+                        modifier = Modifier.padding(top = 2.dp),
+                        fontFamily = FontFamily.SansSerif
+                    )
                 }
                 Spacer(modifier = Modifier.padding(4.dp))
-                Button(onClick = {
-                                 MainActivity.tempProduct = productList
-                    navController.navigate("product_detail")
-                }, modifier = Modifier
-                    .padding(0.dp)
-                    .fillMaxWidth(), enabled = true ,shape = MaterialTheme.shapes.medium,) {
+                Button(
+                    onClick = {
+                        MainActivity.tempProduct = productList
+                        navController.navigate("product_detail")
+                    },
+                    modifier = Modifier
+                        .padding(0.dp)
+                        .fillMaxWidth(),
+                    enabled = true, shape = MaterialTheme.shapes.medium,
+                ) {
                     Text(text = "BUY", color = Color.White)
                 }
-                
-                
 
 
             }
         }
     }
+
 }

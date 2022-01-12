@@ -2,6 +2,7 @@ package com.lubnamariyam.lubsboutique.view
 
 import android.app.Activity
 import android.graphics.Paint
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,20 +28,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LiveData
+import androidx.navigation.NavController
 import coil.compose.base.R
 import coil.compose.rememberImagePainter
 import coil.size.Scale
+import com.lubnamariyam.lubsboutique.ConnectivityStatus
+import com.lubnamariyam.lubsboutique.database.ProductEntity
 import com.lubnamariyam.lubsboutique.ui.theme.Purple200
 import com.lubnamariyam.lubsboutique.viewModel.ProductViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 object lub{
-    var cartTotal = 0
-    var savings = 0
-    var finalPrice = 0
+
 }
+@ExperimentalCoroutinesApi
+@ExperimentalAnimationApi
 @Composable
-fun CartPage(productViewModel: ProductViewModel) {
-    var data = productViewModel.getAllProduct().observeAsState(arrayListOf())
+fun CartPage(productViewModel: ProductViewModel, navController: NavController, data : State<List<ProductEntity>>, cartTotal : String, savings : String, finalPrice: String) {
 
     Column() {
         TopAppBar(backgroundColor = Color.White,
@@ -53,13 +58,13 @@ fun CartPage(productViewModel: ProductViewModel) {
                 )
             } ,
             navigationIcon = {
-                IconButton(onClick = {}) {
+                IconButton(onClick = {navController.navigate("product_detail")}) {
                     Icon(Icons.Filled.ArrowBack, null ,
                     tint = Purple200)
                 }
             },
-
             )
+        ConnectivityStatus()
         LazyColumn(Modifier.weight(1f), content = {
             items(
                 items = data.value,
@@ -138,30 +143,11 @@ fun CartPage(productViewModel: ProductViewModel) {
                             }
                         }
                     }
-                    var ab = it.special.drop(1)
-                    if (ab.contains(",")){
-                        ab = ab.drop(2)
-                    }
-                    var pric = it.price.drop(1)
-                    if (pric.contains(",")){
-                        pric = pric.drop(2)
-                    }
-                    lub.finalPrice = lub.finalPrice.plus(Integer.parseInt(ab))
-                    var tempsavings = Integer.parseInt(pric).minus(Integer.parseInt(ab))
-                    lub.savings = lub.savings.plus(tempsavings)
-                    lub.cartTotal = lub.cartTotal.plus(Integer.parseInt(ab))
+
                 })
 
         })
         Spacer(modifier = Modifier.padding(10.dp))
-        /*for (i in 0 until data.value.size){
-            finalPrice = finalPrice.toInt().plus(data.value[i].special.toInt())
-            var tempsavings = data.value[i].price.toInt().minus(data.value[i].special.toInt())
-            savings = savings.plus(tempsavings)
-
-            cartTotal = cartTotal.plus(data.value[i].price.toInt())
-
-        }*/
 
         Card(modifier = Modifier
             .fillMaxWidth()
@@ -178,21 +164,21 @@ fun CartPage(productViewModel: ProductViewModel) {
                     Row(modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(text = "Cart Total",fontWeight = FontWeight.Medium , fontFamily = FontFamily.SansSerif)
-                        Text(text = lub.cartTotal.toFloat().toString(), fontWeight = FontWeight.Medium , fontFamily = FontFamily.SansSerif)
+                        Text(text = cartTotal.toFloat().toString(), fontWeight = FontWeight.Medium , fontFamily = FontFamily.SansSerif)
                     }
                     Spacer(modifier = Modifier.padding(4.dp))
 
                     Row(modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(text = "Savings" , fontWeight = FontWeight.Medium , fontFamily = FontFamily.SansSerif)
-                        Text(text = "${lub.savings.toFloat()}" , fontWeight = FontWeight.Medium , fontFamily = FontFamily.SansSerif)
+                        Text(text = "${savings.toFloat()}" , fontWeight = FontWeight.Medium , fontFamily = FontFamily.SansSerif)
                     }
                     Spacer(modifier = Modifier.padding(4.dp))
 
                     Row(modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(text = "Final Price" , fontWeight = FontWeight.Bold , fontFamily = FontFamily.SansSerif)
-                        Text(text = lub.finalPrice.toFloat().toString(), fontWeight = FontWeight.Bold , fontFamily = FontFamily.SansSerif)
+                        Text(text = finalPrice.toFloat().toString(), fontWeight = FontWeight.Bold , fontFamily = FontFamily.SansSerif)
                     }
                     Spacer(modifier = Modifier.padding(4.dp))
                 }
@@ -208,7 +194,6 @@ fun CartPage(productViewModel: ProductViewModel) {
             Text(text = "CHECKOUT", color = Color.White)
         }
     }
-
 
 
 }

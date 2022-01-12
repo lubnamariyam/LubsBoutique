@@ -7,21 +7,27 @@ import android.window.SplashScreen
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -41,26 +47,35 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.flowlayout.FlowColumn
+import com.lubnamariyam.lubsboutique.Utility.ConnectionState
+import com.lubnamariyam.lubsboutique.Utility.connectivityState
 import com.lubnamariyam.lubsboutique.model.Product
 import com.lubnamariyam.lubsboutique.model.ProductResponse
 import com.lubnamariyam.lubsboutique.ui.theme.LubsBoutiqueTheme
+import com.lubnamariyam.lubsboutique.ui.theme.Purple200
+import com.lubnamariyam.lubsboutique.ui.theme.green
+import com.lubnamariyam.lubsboutique.ui.theme.red
 import com.lubnamariyam.lubsboutique.view.CartPage
 import com.lubnamariyam.lubsboutique.view.HomeScreen
 import com.lubnamariyam.lubsboutique.view.ProductDetailPage
 import com.lubnamariyam.lubsboutique.viewModel.HomeViewModel
 import com.lubnamariyam.lubsboutique.viewModel.ProductViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 
 public class MainActivity : ComponentActivity() {
     val homeViewModel by viewModels<HomeViewModel>()
-    companion object{
+
+    companion object {
         var tempProduct: Product? = null
     }
 
-    var productViewModel : ProductViewModel? = null
+    var productViewModel: ProductViewModel? = null
 
-    
 
+    @ExperimentalCoroutinesApi
+    @ExperimentalAnimationApi
     @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,84 +92,152 @@ public class MainActivity : ComponentActivity() {
     }
 }
 
+@ExperimentalCoroutinesApi
+@ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @Composable
-fun Navigation(viewModel: HomeViewModel , productViewModel: ProductViewModel) {
+fun Navigation(viewModel: HomeViewModel, productViewModel: ProductViewModel) {
     val navController = rememberNavController()
 
-        NavHost(navController = navController,
-            startDestination = "splash_screen") {
-            composable("splash_screen") {
-                SplashScreen(navController = navController)
-            }
-            // Products screen
-            composable("main_screen") {
-                val activity = (LocalContext.current as? Activity)
-                ProductList(productList = viewModel.productListResponse, navController = navController, activity = activity!!)
-            }
-            // Product Details Screen
-            composable("product_detail") {
-                Column() {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = "Product Detail",
-                                textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = FontFamily.SansSerif
-                            )
-                        } ,
-                        navigationIcon = {
-                            IconButton(onClick = { navController.navigate("main_screen") }) {
-                                Icon(Icons.Filled.ArrowBack, null)
-                            }
-                        },
-                        actions = {
-                            IconButton(onClick = {/* Do Something*/ }) {
-                                Icon(Icons.Filled.ShoppingCart, null)
-                            }
-                        }
-                    )
-                    ProductDetailPage(product = MainActivity.tempProduct!!, productViewModel, navController)
-                }
-            }
+    NavHost(
+        navController = navController,
+        startDestination = "splash_screen"
+    ) {
+        composable("splash_screen") {
 
-            // Cart Screen
-            composable("cart_screen") {
-                CartPage(productViewModel = productViewModel)
+            SplashScreen(navController = navController)
+        }
+        // Products screen
+        composable("main_screen") {
+            val activity = (LocalContext.current as? Activity)
+            ProductList(
+                productList = viewModel.productListResponse,
+                navController = navController,
+                activity = activity!!
+            )
+        }
+        // Product Details Screen
+        composable("product_detail") {
+            Column() {
+                TopAppBar(backgroundColor = Color.White,
+                    title = {
+                        Text(
+                            text = "Product Detail",
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily.SansSerif, color = Purple200
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.navigate("main_screen") }) {
+                            Icon(Icons.Filled.ArrowBack, null, tint = Purple200)
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = { navController.navigate("cart_screen") }) {
+                            Icon(Icons.Filled.ShoppingCart, null, tint = Purple200)
+                        }
+                    }
+                )
+                ConnectivityStatus()
+                ProductDetailPage(
+                    product = MainActivity.tempProduct!!,
+                    productViewModel,
+                    navController
+                )
             }
+        }
+
+        // Cart Screen
+        composable("cart_screen") {
+            var cartTotal = ""
+            var savings = ""
+            var finalPrice = ""
+            var data = productViewModel.getAllProduct().observeAsState(arrayListOf())
+            var it = data.value
+            var mrpPrice = 0
+            var sellingPrice = 0
+
+            try {
+                for (i in 0 until it.size){
+                    finalPrice = it[i].special
+                    finalPrice = it[i].special.replace("₹","")
+                    finalPrice = it[i].special.replace(",","")
+                    cartTotal = it[i].price
+                    cartTotal = it[i].price.replace("₹","")
+                    cartTotal = it[i].price.replace(",","")
+
+                    mrpPrice += (Integer.parseInt(cartTotal)) * (it[i].quantity)
+                    sellingPrice +=  (Integer.parseInt(finalPrice)) * (it[i].quantity)
+                }
+
+                cartTotal = mrpPrice.toString()
+                finalPrice = sellingPrice.toString()
+
+
+
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
+            CartPage(productViewModel = productViewModel, navController ,data, cartTotal , savings, finalPrice)
 
         }
+
+    }
 }
 
 
-
+@ExperimentalCoroutinesApi
+@ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @Composable
-fun ProductList(productList: ProductResponse , navController: NavController , activity: Activity) {
+fun ProductList(productList: ProductResponse, navController: NavController, activity: Activity) {
     println("Hello  " + productList)
+    val scrollState = rememberScrollState()
     Column() {
-        TopAppBar(
+
+        TopAppBar(backgroundColor = Color.White,
             title = {
                 Text(
                     text = "Lubs Boutique",
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.SansSerif
+                    fontFamily = FontFamily.SansSerif, color = Purple200
                 )
-            } ,
+            },
             navigationIcon = {
-                IconButton(onClick = {activity.finish() }) {
-                    Icon(Icons.Filled.ArrowBack, null)
+                IconButton(onClick = { activity.finish() }) {
+                    Icon(Icons.Filled.ArrowBack, null, tint = Purple200)
                 }
             },
             actions = {
-                IconButton(onClick = {navController.navigate("cart_screen") }) {
-                    Icon(Icons.Filled.ShoppingCart, null)
+                IconButton(onClick = { navController.navigate("cart_screen") }) {
+                    Icon(Icons.Filled.ShoppingCart, null, tint = Purple200)
                 }
             }
         )
+
+        ConnectivityStatus()
+
+        Spacer(modifier = Modifier.padding(4.dp))
+
         LazyVerticalGrid(GridCells.Fixed(2)) {
+            /*item {
+                Card(
+                    modifier = Modifier
+                        .padding(8.dp, 4.dp)
+                        .fillMaxWidth()
+                        .height(250.dp), shape = RoundedCornerShape(8.dp), elevation = 4.dp
+                ) {
+
+                    Image(
+                        painter = painterResource(id = com.lubnamariyam.lubsboutique.R.drawable.banner1),
+                        contentDescription = "Live sale",
+                        modifier = Modifier.fillMaxSize()
+                    )
+
+                }
+            }*/
             items(productList.products.size) { index ->
                 HomeScreen(
                     navController = navController,
@@ -163,12 +246,20 @@ fun ProductList(productList: ProductResponse , navController: NavController , ac
                 )
             }
         }
+
+
+
     }
+
 
 }
 
 
 
+
+
+@ExperimentalCoroutinesApi
+@ExperimentalAnimationApi
 @Composable
 fun SplashScreen(navController: NavController) {
     val scale = remember {
@@ -176,6 +267,7 @@ fun SplashScreen(navController: NavController) {
     }
 
     // AnimationEffect
+    ConnectivityStatus()
 
     LaunchedEffect(key1 = true) {
         scale.animateTo(
@@ -192,13 +284,69 @@ fun SplashScreen(navController: NavController) {
     }
 
     // Image -> Logo
-    Box(contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()) {
-        Image(painter = painterResource(id = R.drawable.app_logo),
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.app_logo),
             contentDescription = "Logo",
             modifier = Modifier
                 .scale(scale.value)
-                .size(300.dp, 300.dp))
+                .size(300.dp, 300.dp)
+        )
+    }
+}
+
+@ExperimentalAnimationApi
+@ExperimentalCoroutinesApi
+@Composable
+fun ConnectivityStatus() {
+    val connection by connectivityState()
+    val isConnected = connection === ConnectionState.Available
+
+    var visibility by remember { mutableStateOf(false) }
+
+    AnimatedVisibility(
+        visible = visibility,
+        enter = expandVertically(),
+        exit = shrinkVertically()
+    ) {
+        ConnectivityStatusBox(isConnected = isConnected)
+    }
+
+    LaunchedEffect(isConnected) {
+        if (!isConnected) {
+            visibility = true
+        } else {
+            delay(2000)
+            visibility = false
+        }
+    }
+}
+
+@Composable
+fun ConnectivityStatusBox(isConnected: Boolean) {
+    val backgroundColor by animateColorAsState(if (isConnected) green else red)
+    val message = if (isConnected) "Back Online!" else "No Internet Connection!"
+    val iconResource = if (isConnected) {
+        R.drawable.ic_connected
+    } else {
+        R.drawable.ic_no_connection
+    }
+
+    Box(
+        modifier = Modifier
+            .background(backgroundColor)
+            .fillMaxWidth()
+            .padding(8.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(painterResource(id = iconResource), "Connectivity Icon", tint = Color.White)
+            Spacer(modifier = Modifier.size(8.dp))
+            Text(message, color = Color.White, fontSize = 15.sp)
+        }
     }
 }
 
