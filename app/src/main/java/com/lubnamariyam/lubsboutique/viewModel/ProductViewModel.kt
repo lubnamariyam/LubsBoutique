@@ -36,9 +36,4 @@ class ProductViewModel(appObj: Application) : AndroidViewModel(appObj)  {
     fun deleteProduct(productId: String) = viewModelScope.launch {
         productRepository.deleteCartProduct(productId)
     }
-
-
-
-
-
 }

@@ -42,10 +42,7 @@ import com.lubnamariyam.lubsboutique.Utility.ConnectionState
 import com.lubnamariyam.lubsboutique.Utility.connectivityState
 import com.lubnamariyam.lubsboutique.model.Product
 import com.lubnamariyam.lubsboutique.model.ProductResponse
-import com.lubnamariyam.lubsboutique.ui.theme.LubsBoutiqueTheme
-import com.lubnamariyam.lubsboutique.ui.theme.Purple200
-import com.lubnamariyam.lubsboutique.ui.theme.green
-import com.lubnamariyam.lubsboutique.ui.theme.red
+import com.lubnamariyam.lubsboutique.ui.theme.*
 import com.lubnamariyam.lubsboutique.view.CartPage
 import com.lubnamariyam.lubsboutique.view.HomeScreen
 import com.lubnamariyam.lubsboutique.view.ProductDetailPage
@@ -63,7 +60,6 @@ public class MainActivity : ComponentActivity() {
 
     var productViewModel: ProductViewModel? = null
 
-
     @ExperimentalCoroutinesApi
     @ExperimentalAnimationApi
     @ExperimentalFoundationApi
@@ -76,6 +72,7 @@ public class MainActivity : ComponentActivity() {
                 Surface(color = MaterialTheme.colors.background) {
                     Navigation(homeViewModel, productViewModel!!)
                     homeViewModel.getProductList()
+
                 }
             }
         }
@@ -109,32 +106,34 @@ fun Navigation(viewModel: HomeViewModel, productViewModel: ProductViewModel) {
         // Product Details Screen
         composable("product_detail") {
             Column() {
-                TopAppBar(backgroundColor = Color.White,
+                TopAppBar(backgroundColor = com.lubnamariyam.lubsboutique.ui.theme.AppBar,
                     title = {
                         Text(
                             text = "Product Detail",
                             textAlign = TextAlign.Center,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.SansSerif, color = Purple200
+                            fontFamily = FontFamily.SansSerif, color = TextColor
                         )
                     },
                     navigationIcon = {
                         IconButton(onClick = { navController.navigate("main_screen") }) {
-                            Icon(Icons.Filled.ArrowBack, null, tint = Purple200)
+                            Icon(Icons.Filled.ArrowBack, null, tint = TextColor)
                         }
                     },
                     actions = {
                         IconButton(onClick = { navController.navigate("cart_screen") }) {
-                            Icon(Icons.Filled.ShoppingCart, null, tint = Purple200)
+                            Icon(Icons.Filled.ShoppingCart, null, tint = TextColor)
                         }
                     }
                 )
                 ConnectivityStatus()
-                ProductDetailPage(
-                    product = MainActivity.tempProduct!!,
-                    productViewModel,
-                    navController
-                )
+                MainActivity.tempProduct?.let { it1 ->
+                    ProductDetailPage(
+                        product = it1,
+                        productViewModel,
+                        navController
+                    )
+                }
             }
         }
 
@@ -198,23 +197,18 @@ fun ProductList(productList: ProductResponse, navController: NavController, acti
     val scrollState = rememberScrollState()
     Column() {
 
-        TopAppBar(backgroundColor = Color.White,
+        TopAppBar(backgroundColor = AppBar,
             title = {
                 Text(
                     text = "Lubs Boutique",
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.SansSerif, color = Purple200
+                    fontFamily = FontFamily.SansSerif, color = TextColor
                 )
-            },
-            navigationIcon = {
-                IconButton(onClick = { activity.finish() }) {
-                    Icon(Icons.Filled.ArrowBack, null, tint = Purple200)
-                }
             },
             actions = {
                 IconButton(onClick = { navController.navigate("cart_screen") }) {
-                    Icon(Icons.Filled.ShoppingCart, null, tint = Purple200)
+                    Icon(Icons.Filled.ShoppingCart, null, tint = TextColor)
                 }
             }
         )

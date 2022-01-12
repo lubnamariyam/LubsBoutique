@@ -1,21 +1,15 @@
 package com.lubnamariyam.lubsboutique.view
 
 import android.app.Activity
-import android.graphics.fonts.Font
+import android.app.AlertDialog
+import android.content.DialogInterface
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.fontResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -23,23 +17,27 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
-import coil.compose.base.R
 import coil.compose.rememberImagePainter
 import coil.size.Scale
-import coil.transform.CircleCropTransformation
 import com.lubnamariyam.lubsboutique.MainActivity
 import com.lubnamariyam.lubsboutique.model.Product
-import com.lubnamariyam.lubsboutique.model.ProductResponse
-import com.lubnamariyam.lubsboutique.viewModel.HomeViewModel
-import com.lubnamariyam.lubsboutique.viewModel.ProductViewModel
+import com.lubnamariyam.lubsboutique.ui.theme.TextColor
+
 
 @Composable
-fun HomeScreen(navController: NavController , activity: Activity , productList : Product){
+fun HomeScreen(navController: NavController, activity: Activity, productList: Product) {
     BackHandler() {
-        activity.finish()
+        val alertDialogBuilder = AlertDialog.Builder(activity)
+        alertDialogBuilder.setTitle("Exit App")
+        alertDialogBuilder.setMessage("Are you sure you want to exit?")
+        alertDialogBuilder.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
+            activity.finish()
+        }
+        alertDialogBuilder.setNegativeButton("No", { dialogInterface: DialogInterface, i: Int -> })
+
+        alertDialogBuilder.create()
+        alertDialogBuilder.show()
     }
 
     Card(
@@ -75,7 +73,7 @@ fun HomeScreen(navController: NavController , activity: Activity , productList :
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(start = 4.dp),
-                    fontFamily = FontFamily.SansSerif
+                    fontFamily = FontFamily.SansSerif, color = TextColor
                 )
                 Spacer(modifier = Modifier.padding(4.dp))
                 Row(modifier = Modifier.padding(start = 4.dp)) {
@@ -83,12 +81,12 @@ fun HomeScreen(navController: NavController , activity: Activity , productList :
                         text = productList.special,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Start,
-                        fontFamily = FontFamily.SansSerif
+                        fontFamily = FontFamily.SansSerif, color = TextColor
                     )
                     Spacer(modifier = Modifier.padding(6.dp))
                     Text(
                         text = productList.price,
-                        color = Color.Gray,
+                        color = TextColor,
                         textAlign = TextAlign.End,
                         style = TextStyle(textDecoration = TextDecoration.LineThrough),
                         modifier = Modifier.padding(top = 2.dp),
@@ -106,10 +104,8 @@ fun HomeScreen(navController: NavController , activity: Activity , productList :
                         .fillMaxWidth(),
                     enabled = true, shape = MaterialTheme.shapes.medium,
                 ) {
-                    Text(text = "BUY", color = Color.White)
+                    Text(text = "BUY", color = TextColor)
                 }
-
-
             }
         }
     }
