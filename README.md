@@ -7,6 +7,7 @@ This App contains 4 screens: A Splash Screen, A List of Products consists of tit
 
 # Mad Score Card 
 https://madscorecard.withgoogle.com/scorecards/1899211127/
+[![summary.png](https://i.postimg.cc/qMSmhMxR/summary.png)](https://postimg.cc/4mvvjGMk)
 
 
 # Screenshots
