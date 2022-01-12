@@ -3,7 +3,7 @@
 LubsBoutique is a Ecommerce Application, built with Jetpack Compose.
 
 # Features
-This App contains three screens: A List of Products consists of title , price and a button, A Product detail page for Product detailed description, A Cart page concists of products with quantity and cart total, discount and finl price.
+This App contains 4 screens:a Splash Screen, A List of Products consists of title , price and a button, A Product detail page for Product detailed description, A Cart page concists of products with quantity and cart total, discount and finl price.
 
 # Screenshots
 [![screenshot-1641990566132.png](https://i.postimg.cc/cH5hjyd1/screenshot-1641990566132.png)](https://postimg.cc/bDk1D5G4)
