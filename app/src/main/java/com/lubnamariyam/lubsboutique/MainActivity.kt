@@ -150,36 +150,40 @@ fun Navigation(viewModel: HomeViewModel, productViewModel: ProductViewModel) {
 
         // Cart Screen
         composable("cart_screen") {
+            var data = productViewModel.getAllProduct().observeAsState(arrayListOf())
             var cartTotal = ""
             var savings = ""
             var finalPrice = ""
-            var data = productViewModel.getAllProduct().observeAsState(arrayListOf())
             var it = data.value
             var mrpPrice = 0
             var sellingPrice = 0
-
+            var discountPrice = 0
+            var isCartEmpty = false
             try {
-                for (i in 0 until it.size){
-                    finalPrice = it[i].special
-                    finalPrice = it[i].special.replace("₹","")
-                    finalPrice = it[i].special.replace(",","")
-                    cartTotal = it[i].price
-                    cartTotal = it[i].price.replace("₹","")
-                    cartTotal = it[i].price.replace(",","")
+                if(it.size > 0){
+                    isCartEmpty = true
+                    for (i in 0 until it.size){
+                        finalPrice = it[i].special.drop(1)
+                        finalPrice = finalPrice.replace(",","")
+                        cartTotal = it[i].price.drop(1)
+                        cartTotal = cartTotal.replace(",","")
+                        mrpPrice += (Integer.parseInt(cartTotal)) * (it[i].quantity)
+                        sellingPrice +=  (Integer.parseInt(finalPrice)) * (it[i].quantity)
 
-                    mrpPrice += (Integer.parseInt(cartTotal)) * (it[i].quantity)
-                    sellingPrice +=  (Integer.parseInt(finalPrice)) * (it[i].quantity)
+                        discountPrice += mrpPrice - sellingPrice
+                    }
+
+                    cartTotal = mrpPrice.toString()
+                    finalPrice = sellingPrice.toString()
+                    savings = discountPrice.toString()
+
                 }
-
-                cartTotal = mrpPrice.toString()
-                finalPrice = sellingPrice.toString()
-
-
 
             }catch (e:Exception){
                 e.printStackTrace()
             }
-            CartPage(productViewModel = productViewModel, navController ,data, cartTotal , savings, finalPrice)
+
+            CartPage(productViewModel = productViewModel, navController ,data, cartTotal , savings, finalPrice , isCartEmpty)
 
         }
 
