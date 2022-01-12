@@ -95,6 +95,7 @@ fun CartPage(productViewModel: ProductViewModel, navController: NavController, d
                                     Spacer(modifier = Modifier.padding(10.dp))
                                     Column(modifier = Modifier.fillMaxWidth()) {
                                         Text(text = it.name , fontWeight = FontWeight.Medium , textAlign = TextAlign.Start, fontFamily = FontFamily.SansSerif)
+                                        Spacer(modifier = Modifier.padding(4.dp))
                                         Row() {
                                             Text(text = it.special, fontWeight = FontWeight.Bold , textAlign = TextAlign.Start, fontFamily = FontFamily.SansSerif)
                                             Spacer(modifier = Modifier.padding(6.dp))
@@ -150,7 +151,7 @@ fun CartPage(productViewModel: ProductViewModel, navController: NavController, d
                     })
 
             })
-            Spacer(modifier = Modifier.padding(10.dp))
+            Spacer(modifier = Modifier.padding(6.dp))
 
             Card(modifier = Modifier
                 .fillMaxWidth()

@@ -3,29 +3,22 @@ package com.lubnamariyam.lubsboutique
 import android.app.Activity
 import android.os.Bundle
 import android.view.animation.OvershootInterpolator
-import android.window.SplashScreen
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -34,20 +27,17 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.flowlayout.FlowColumn
 import com.lubnamariyam.lubsboutique.Utility.ConnectionState
 import com.lubnamariyam.lubsboutique.Utility.connectivityState
 import com.lubnamariyam.lubsboutique.model.Product
@@ -150,25 +140,25 @@ fun Navigation(viewModel: HomeViewModel, productViewModel: ProductViewModel) {
 
         // Cart Screen
         composable("cart_screen") {
-            var data = productViewModel.getAllProduct().observeAsState(arrayListOf())
+            val data = productViewModel.getAllProduct().observeAsState(arrayListOf())
             var cartTotal = ""
             var savings = ""
             var finalPrice = ""
-            var it = data.value
+            val it = data.value
             var mrpPrice = 0
             var sellingPrice = 0
             var discountPrice = 0
             var isCartEmpty = false
             try {
-                if(it.size > 0){
+                if (it.size > 0) {
                     isCartEmpty = true
-                    for (i in 0 until it.size){
+                    for (i in 0 until it.size) {
                         finalPrice = it[i].special.drop(1)
-                        finalPrice = finalPrice.replace(",","")
+                        finalPrice = finalPrice.replace(",", "")
                         cartTotal = it[i].price.drop(1)
-                        cartTotal = cartTotal.replace(",","")
+                        cartTotal = cartTotal.replace(",", "")
                         mrpPrice += (Integer.parseInt(cartTotal)) * (it[i].quantity)
-                        sellingPrice +=  (Integer.parseInt(finalPrice)) * (it[i].quantity)
+                        sellingPrice += (Integer.parseInt(finalPrice)) * (it[i].quantity)
 
                         discountPrice += mrpPrice - sellingPrice
                     }
@@ -179,11 +169,19 @@ fun Navigation(viewModel: HomeViewModel, productViewModel: ProductViewModel) {
 
                 }
 
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
 
-            CartPage(productViewModel = productViewModel, navController ,data, cartTotal , savings, finalPrice , isCartEmpty)
+            CartPage(
+                productViewModel = productViewModel,
+                navController,
+                data,
+                cartTotal,
+                savings,
+                finalPrice,
+                isCartEmpty
+            )
 
         }
 
@@ -226,22 +224,6 @@ fun ProductList(productList: ProductResponse, navController: NavController, acti
         Spacer(modifier = Modifier.padding(4.dp))
 
         LazyVerticalGrid(GridCells.Fixed(2)) {
-            /*item {
-                Card(
-                    modifier = Modifier
-                        .padding(8.dp, 4.dp)
-                        .fillMaxWidth()
-                        .height(250.dp), shape = RoundedCornerShape(8.dp), elevation = 4.dp
-                ) {
-
-                    Image(
-                        painter = painterResource(id = com.lubnamariyam.lubsboutique.R.drawable.banner1),
-                        contentDescription = "Live sale",
-                        modifier = Modifier.fillMaxSize()
-                    )
-
-                }
-            }*/
             items(productList.products.size) { index ->
                 HomeScreen(
                     navController = navController,
@@ -252,14 +234,10 @@ fun ProductList(productList: ProductResponse, navController: NavController, acti
         }
 
 
-
     }
 
 
 }
-
-
-
 
 
 @ExperimentalCoroutinesApi
