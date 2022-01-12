@@ -6,6 +6,7 @@ import android.view.animation.OvershootInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -65,6 +66,7 @@ public class MainActivity : ComponentActivity() {
     @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         productViewModel = ViewModelProvider(this).get(ProductViewModel::class.java)
         setContent {
             LubsBoutiqueTheme {
@@ -105,7 +107,7 @@ fun Navigation(viewModel: HomeViewModel, productViewModel: ProductViewModel) {
         }
         // Product Details Screen
         composable("product_detail") {
-            Column() {
+            Column(Modifier.background(Color.White)) {
                 TopAppBar(backgroundColor = com.lubnamariyam.lubsboutique.ui.theme.AppBar,
                     title = {
                         Text(
@@ -195,7 +197,7 @@ fun Navigation(viewModel: HomeViewModel, productViewModel: ProductViewModel) {
 fun ProductList(productList: ProductResponse, navController: NavController, activity: Activity) {
     println("Hello  " + productList)
     val scrollState = rememberScrollState()
-    Column() {
+    Column(Modifier.background(Color.White)) {
 
         TopAppBar(backgroundColor = AppBar,
             title = {
@@ -262,7 +264,7 @@ fun SplashScreen(navController: NavController) {
     // Image -> Logo
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().background(Color.White)
     ) {
         Image(
             painter = painterResource(id = R.drawable.app_logo),

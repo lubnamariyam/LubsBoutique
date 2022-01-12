@@ -49,7 +49,7 @@ fun CartPage(
 ) {
 
     if (isCartEmpty) {
-        Column() {
+        Column(Modifier.background(Color.White)) {
             TopAppBar(
                 backgroundColor = com.lubnamariyam.lubsboutique.ui.theme.AppBar,
                 title = {
@@ -83,11 +83,11 @@ fun CartPage(
                         Card(
                             modifier = Modifier
                                 .padding(8.dp, 4.dp)
-                                .fillMaxWidth()
+                                .fillMaxWidth().background(Color.White)
                                 .height(100.dp), shape = RoundedCornerShape(8.dp), elevation = 4.dp
                         ) {
                             Surface() {
-                                Row() {
+                                Row(Modifier.background(Color.White)) {
                                     Image(
                                         painter = rememberImagePainter(
                                             data = it.image,
@@ -188,10 +188,10 @@ fun CartPage(
 
             Card(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth().background(Color.White)
                     .padding(8.dp, 4.dp), shape = RoundedCornerShape(8.dp), elevation = 4.dp
             ) {
-                Column(verticalArrangement = Arrangement.Top) {
+                Column(verticalArrangement = Arrangement.Top , modifier = Modifier.background(Color.White)) {
                     Row(Modifier.background(color = vlgray)) {
                         Text(
                             text = "Price Details", modifier = Modifier
@@ -201,7 +201,7 @@ fun CartPage(
                     }
                     Spacer(modifier = Modifier.padding(4.dp))
                     Column(
-                        modifier = Modifier.padding(10.dp)
+                        modifier = Modifier.padding(10.dp).background(Color.White)
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),

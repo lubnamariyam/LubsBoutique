@@ -5,11 +5,13 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -50,7 +52,7 @@ fun HomeScreen(navController: NavController, activity: Activity, productList: Pr
             Column(
                 Modifier
                     .padding(4.dp)
-                    .fillMaxSize()
+                    .fillMaxSize().background(Color.White)
             ) {
                 Image(
                     painter = rememberImagePainter(

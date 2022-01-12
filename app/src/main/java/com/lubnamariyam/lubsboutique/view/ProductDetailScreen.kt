@@ -1,12 +1,14 @@
 package com.lubnamariyam.lubsboutique.view
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -40,18 +42,18 @@ fun ProductDetailPage(
     val singleprddata = productViewModel.getSingleAllProduct(product.product_id).observeAsState()
 
 
-    Column() {
+    Column(Modifier.background(Color.White)) {
         Card(
             modifier = Modifier
                 .padding(12.dp)
                 .fillMaxWidth()
-                .fillMaxHeight(), shape = RoundedCornerShape(8.dp), elevation = 6.dp
+                .fillMaxHeight().background(Color.White), shape = RoundedCornerShape(8.dp), elevation = 6.dp
         ) {
-            Surface() {
+            Surface(modifier = Modifier.background(Color.White)) {
                 Column(
                     Modifier
                         .padding(4.dp)
-                        .fillMaxSize()
+                        .fillMaxSize().background(Color.White)
                 ) {
 
                     Image(
