@@ -167,21 +167,21 @@ fun CartPage(productViewModel: ProductViewModel, navController: NavController, d
                         Row(modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween) {
                             Text(text = "Cart Total",fontWeight = FontWeight.Medium , fontFamily = FontFamily.SansSerif)
-                            Text(text = cartTotal.toFloat().toString(), fontWeight = FontWeight.Medium , fontFamily = FontFamily.SansSerif)
+                            Text(text = "Rs.${cartTotal.toFloat()}", fontWeight = FontWeight.Medium , fontFamily = FontFamily.SansSerif)
                         }
                         Spacer(modifier = Modifier.padding(4.dp))
 
                         Row(modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween) {
                             Text(text = "Savings" , fontWeight = FontWeight.Medium , fontFamily = FontFamily.SansSerif)
-                            Text(text = "${savings.toFloat()}" , fontWeight = FontWeight.Medium , fontFamily = FontFamily.SansSerif)
+                            Text(text = "Rs.${savings.toFloat()}" , fontWeight = FontWeight.Medium , fontFamily = FontFamily.SansSerif)
                         }
                         Spacer(modifier = Modifier.padding(4.dp))
 
                         Row(modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween) {
                             Text(text = "Final Price" , fontWeight = FontWeight.Bold , fontFamily = FontFamily.SansSerif)
-                            Text(text = finalPrice.toFloat().toString(), fontWeight = FontWeight.Bold , fontFamily = FontFamily.SansSerif)
+                            Text(text = "Rs.${finalPrice.toFloat()}", fontWeight = FontWeight.Bold , fontFamily = FontFamily.SansSerif)
                         }
                         Spacer(modifier = Modifier.padding(4.dp))
                     }
