@@ -38,6 +38,7 @@ import coil.size.Scale
 import com.lubnamariyam.lubsboutique.ConnectivityStatus
 import com.lubnamariyam.lubsboutique.database.ProductEntity
 import com.lubnamariyam.lubsboutique.ui.theme.Purple200
+import com.lubnamariyam.lubsboutique.ui.theme.vlgray
 import com.lubnamariyam.lubsboutique.viewModel.ProductViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -157,10 +158,10 @@ fun CartPage(productViewModel: ProductViewModel, navController: NavController, d
                 .fillMaxWidth()
                 .padding(8.dp, 4.dp), shape = RoundedCornerShape(8.dp), elevation = 4.dp) {
                 Column(verticalArrangement = Arrangement.Top) {
-                    Row(Modifier.background(Color.LightGray )) {
+                    Row(Modifier.background(color = vlgray)) {
                         Text(text = "Price Details" , modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp))
+                            .padding(8.dp) )
                     }
                     Spacer(modifier = Modifier.padding(4.dp))
                     Column(modifier = Modifier.padding(10.dp)
@@ -193,7 +194,7 @@ fun CartPage(productViewModel: ProductViewModel, navController: NavController, d
 
             Button(onClick = { },
                 modifier = Modifier
-                    .padding(start = 6.dp, end = 6.dp, bottom = 6.dp)
+                    .padding(6.dp)
                     .fillMaxWidth(), enabled = true ,shape = MaterialTheme.shapes.medium) {
                 Text(text = "CHECKOUT", color = Color.White)
             }
